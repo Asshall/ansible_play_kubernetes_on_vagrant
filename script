@@ -1,0 +1,22 @@
+#!/bin/bash 
+
+if [[ $1 ]]; then 
+
+awk '
+BEGIN{cmp = 2.2}
+{
+if ( NR > 18 ){
+     cmp += 0.2
+     ret = ""
+     if (cmp ~ /^[^\.]+$/)
+        ret = "["cmp".000000,"
+     else
+        ret = "["cmp"00000,"
+     $1 = ret
+}
+print $0 
+}
+
+' $1
+
+fi 

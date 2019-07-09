@@ -1,0 +1,71 @@
+- hosts: all
+  become: yes
+  gather_facts: no
+  tasks: 
+  - name: install docker and kubeadm 
+    block: 
+    - apt_repository:
+        repo: "{{ item }}"
+      with_items: 
+      - deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+      - deb https://apt.kubernetes.io/ kubernetes-xenial main
+    - apt: 
+        update_cache: yes
+        force_apt_get: yes
+        allow_unauthenticated: yes 
+        name: ['kubelet', 'kubeadm', 'kubectl','docker-ce']      
+    - blockinfile:
+        path: "/etc/docker/daemon.json"
+        block: |
+          {
+            "exec-opts": ["native.cgroupdriver=systemd"],
+            "log-driver": "json-file",
+            "log-opts": {
+              "max-size": "100m"
+            },
+            "storage-driver": "overlay2"
+          }
+        create: yes
+        marker: ''
+    - file: 
+        path: /etc/systemd/system/docker.service.d 
+        state: directory
+    - shell: hostname -I | grep -oP '192(\.\d+){3}'
+      register: node_ip
+    - replace:
+        dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+        regexp: '(\$KUBELET_EXTRA_ARGS)$'
+        replace: \g<1> --node-ip={{ node_ip.stdout }} 
+    - systemd:
+        daemon_reload: yes
+        name: "{{ item }}"
+        state: restarted
+      with_items: [kubelet, docker]
+
+- hosts: master
+  become: yes
+  gather_facts: no
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  tasks: 
+    - name: Init master node
+      block: 
+      - shell: kubeadm init --apiserver-advertise-address=192.168.0.2 --pod-network-cidr=10.244.0.0/16 | tail -n 2 
+        register: result
+      - shell: "echo join_cmd: {{ result.stdout_lines[0][:-2] ~ result.stdout_lines[1] ~ ' > ' ~ playbook_dir ~ '/group_vars/all.yaml' }}"
+        delegate_to: localhost
+      - copy: 
+          src: "{{ playbook_dir ~ '/kube_ressource.yaml' }}"
+          dest: /root
+      - shell: |
+          sysctl net.bridge.bridge-nf-call-iptables=1 && \ 
+          kubectl label node/master ingress=true && \
+          kubectl apply -f ~/kube_ressource.yaml
+#nohup kubectl proxy --disable-filter=true --address=0.0.0.0 &
+# kubectl -n kube-system describe secret default| awk '$1=="token:"{print $2}'
+- hosts: worker1 worker2
+  become: yes
+  gather_facts: no
+  tasks: 
+    - name: Join master node
+      shell: "{{ join_cmd }}"

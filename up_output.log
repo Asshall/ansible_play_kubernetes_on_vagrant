@@ -1,0 +1,268 @@
+Bringing machine 'master' up with 'virtualbox' provider...
+Bringing machine 'worker1' up with 'virtualbox' provider...
+Bringing machine 'worker2' up with 'virtualbox' provider...
+==> master: Importing base box 'ubuntu/xenial64'...
+[KProgress: 90%[K==> master: Matching MAC address for NAT networking...
+==> master: Checking if box 'ubuntu/xenial64' version '20190613.1.0' is up to date...
+==> master: Setting the name of the VM: kubernetes_master_1560799265814_92782
+==> master: Clearing any previously set network interfaces...
+==> master: Preparing network interfaces based on configuration...
+    master: Adapter 1: nat
+    master: Adapter 2: intnet
+==> master: Forwarding ports...
+    master: 8080 (guest) => 50000 (host) (adapter 1)
+    master: 22 (guest) => 2222 (host) (adapter 1)
+==> master: Running 'pre-boot' VM customizations...
+==> master: Booting VM...
+==> master: Waiting for machine to boot. This may take a few minutes...
+    master: SSH address: 127.0.0.1:2222
+    master: SSH username: vagrant
+    master: SSH auth method: private key
+    master: 
+    master: Vagrant insecure key detected. Vagrant will automatically replace
+    master: this with a newly generated keypair for better security.
+    master: 
+    master: Inserting generated public key within guest...
+    master: Removing insecure key from the guest if it's present...
+    master: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> master: Machine booted and ready!
+==> master: Checking for guest additions in VM...
+    master: The guest additions on this VM do not match the installed version of
+    master: VirtualBox! In most cases this is fine, but in rare cases it can
+    master: prevent things such as shared folders from working properly. If you see
+    master: shared folder errors, please make sure the guest additions within the
+    master: virtual machine match the version of VirtualBox you have installed on
+    master: your host and reload your VM.
+    master: 
+    master: Guest Additions Version: 5.1.38
+    master: VirtualBox Version: 6.0
+==> master: Setting hostname...
+==> master: Configuring and enabling network interfaces...
+==> master: Mounting shared folders...
+    master: /vagrant => /home/square/dev/vagrant/kubernetes
+==> master: Running provisioner: ansible...
+Vagrant has automatically selected the compatibility mode '2.0'
+according to the Ansible version installed (2.8.1).
+
+Alternatively, the compatibility mode can be specified in your Vagrantfile:
+https://www.vagrantup.com/docs/provisioning/ansible_common.html#compatibility_mode
+    master: Running ansible-playbook...
+
+PLAY [all] *********************************************************************
+
+TASK [apt_repository] **********************************************************
+changed: [master] => (item=deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable)
+changed: [master] => (item=deb https://apt.kubernetes.io/ kubernetes-xenial main)
+
+TASK [apt] *********************************************************************
+changed: [master]
+
+TASK [blockinfile] *************************************************************
+changed: [master]
+
+TASK [file] ********************************************************************
+changed: [master] => (item=/etc/systemd/system/docker.service.d)
+
+TASK [service] *****************************************************************
+changed: [master]
+
+PLAY [master] ******************************************************************
+
+TASK [shell] *******************************************************************
+changed: [master]
+
+TASK [shell] *******************************************************************
+changed: [master -> localhost]
+
+TASK [copy] ********************************************************************
+changed: [master]
+
+TASK [shell] *******************************************************************
+changed: [master]
+ [WARNING]: Could not match supplied host pattern, ignoring: worker1
+ [WARNING]: Could not match supplied host pattern, ignoring: worker2
+
+PLAY [worker1 worker2] *********************************************************
+skipping: no hosts matched
+
+PLAY RECAP *********************************************************************
+master                     : ok=9    changed=9    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+Playbook run took 0 days, 0 hours, 5 minutes, 19 seconds
+==> worker1: Importing base box 'ubuntu/xenial64'...
+[KProgress: 10%[KProgress: 90%[K==> worker1: Matching MAC address for NAT networking...
+==> worker1: Checking if box 'ubuntu/xenial64' version '20190613.1.0' is up to date...
+==> worker1: Setting the name of the VM: kubernetes_worker1_1560799631471_28526
+==> worker1: Fixed port collision for 22 => 2222. Now on port 2200.
+==> worker1: Clearing any previously set network interfaces...
+==> worker1: Preparing network interfaces based on configuration...
+    worker1: Adapter 1: nat
+    worker1: Adapter 2: intnet
+==> worker1: Forwarding ports...
+    worker1: 8080 (guest) => 50001 (host) (adapter 1)
+    worker1: 22 (guest) => 2200 (host) (adapter 1)
+==> worker1: Running 'pre-boot' VM customizations...
+==> worker1: Booting VM...
+==> worker1: Waiting for machine to boot. This may take a few minutes...
+    worker1: SSH address: 127.0.0.1:2200
+    worker1: SSH username: vagrant
+    worker1: SSH auth method: private key
+    worker1: 
+    worker1: Vagrant insecure key detected. Vagrant will automatically replace
+    worker1: this with a newly generated keypair for better security.
+    worker1: 
+    worker1: Inserting generated public key within guest...
+    worker1: Removing insecure key from the guest if it's present...
+    worker1: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> worker1: Machine booted and ready!
+==> worker1: Checking for guest additions in VM...
+    worker1: The guest additions on this VM do not match the installed version of
+    worker1: VirtualBox! In most cases this is fine, but in rare cases it can
+    worker1: prevent things such as shared folders from working properly. If you see
+    worker1: shared folder errors, please make sure the guest additions within the
+    worker1: virtual machine match the version of VirtualBox you have installed on
+    worker1: your host and reload your VM.
+    worker1: 
+    worker1: Guest Additions Version: 5.1.38
+    worker1: VirtualBox Version: 6.0
+==> worker1: Setting hostname...
+==> worker1: Configuring and enabling network interfaces...
+==> worker1: Mounting shared folders...
+    worker1: /vagrant => /home/square/dev/vagrant/kubernetes
+==> worker1: Running provisioner: ansible...
+Vagrant has automatically selected the compatibility mode '2.0'
+according to the Ansible version installed (2.8.1).
+
+Alternatively, the compatibility mode can be specified in your Vagrantfile:
+https://www.vagrantup.com/docs/provisioning/ansible_common.html#compatibility_mode
+    worker1: Running ansible-playbook...
+
+PLAY [all] *********************************************************************
+
+TASK [apt_repository] **********************************************************
+changed: [worker1] => (item=deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable)
+changed: [worker1] => (item=deb https://apt.kubernetes.io/ kubernetes-xenial main)
+
+TASK [apt] *********************************************************************
+changed: [worker1]
+
+TASK [blockinfile] *************************************************************
+changed: [worker1]
+
+TASK [file] ********************************************************************
+changed: [worker1] => (item=/etc/systemd/system/docker.service.d)
+
+TASK [service] *****************************************************************
+changed: [worker1]
+
+PLAY [master] ******************************************************************
+skipping: no hosts matched
+ [WARNING]: Could not match supplied host pattern, ignoring: worker2
+
+PLAY [worker1 worker2] *********************************************************
+
+TASK [shell] *******************************************************************
+changed: [worker1]
+
+TASK [shell] *******************************************************************
+changed: [worker1]
+
+TASK [replace] *****************************************************************
+changed: [worker1]
+
+TASK [service] *****************************************************************
+changed: [worker1]
+
+PLAY RECAP *********************************************************************
+worker1                    : ok=9    changed=9    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+Playbook run took 0 days, 0 hours, 2 minutes, 12 seconds
+==> worker2: Importing base box 'ubuntu/xenial64'...
+[KProgress: 10%[KProgress: 90%[K==> worker2: Matching MAC address for NAT networking...
+==> worker2: Checking if box 'ubuntu/xenial64' version '20190613.1.0' is up to date...
+==> worker2: Setting the name of the VM: kubernetes_worker2_1560799810921_68554
+==> worker2: Fixed port collision for 22 => 2222. Now on port 2201.
+==> worker2: Clearing any previously set network interfaces...
+==> worker2: Preparing network interfaces based on configuration...
+    worker2: Adapter 1: nat
+    worker2: Adapter 2: intnet
+==> worker2: Forwarding ports...
+    worker2: 8080 (guest) => 50002 (host) (adapter 1)
+    worker2: 22 (guest) => 2201 (host) (adapter 1)
+==> worker2: Running 'pre-boot' VM customizations...
+==> worker2: Booting VM...
+==> worker2: Waiting for machine to boot. This may take a few minutes...
+    worker2: SSH address: 127.0.0.1:2201
+    worker2: SSH username: vagrant
+    worker2: SSH auth method: private key
+    worker2: Warning: Remote connection disconnect. Retrying...
+    worker2: Warning: Connection reset. Retrying...
+    worker2: 
+    worker2: Vagrant insecure key detected. Vagrant will automatically replace
+    worker2: this with a newly generated keypair for better security.
+    worker2: 
+    worker2: Inserting generated public key within guest...
+    worker2: Removing insecure key from the guest if it's present...
+    worker2: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> worker2: Machine booted and ready!
+==> worker2: Checking for guest additions in VM...
+    worker2: The guest additions on this VM do not match the installed version of
+    worker2: VirtualBox! In most cases this is fine, but in rare cases it can
+    worker2: prevent things such as shared folders from working properly. If you see
+    worker2: shared folder errors, please make sure the guest additions within the
+    worker2: virtual machine match the version of VirtualBox you have installed on
+    worker2: your host and reload your VM.
+    worker2: 
+    worker2: Guest Additions Version: 5.1.38
+    worker2: VirtualBox Version: 6.0
+==> worker2: Setting hostname...
+==> worker2: Configuring and enabling network interfaces...
+==> worker2: Mounting shared folders...
+    worker2: /vagrant => /home/square/dev/vagrant/kubernetes
+==> worker2: Running provisioner: ansible...
+Vagrant has automatically selected the compatibility mode '2.0'
+according to the Ansible version installed (2.8.1).
+
+Alternatively, the compatibility mode can be specified in your Vagrantfile:
+https://www.vagrantup.com/docs/provisioning/ansible_common.html#compatibility_mode
+    worker2: Running ansible-playbook...
+
+PLAY [all] *********************************************************************
+
+TASK [apt_repository] **********************************************************
+changed: [worker2] => (item=deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable)
+changed: [worker2] => (item=deb https://apt.kubernetes.io/ kubernetes-xenial main)
+
+TASK [apt] *********************************************************************
+changed: [worker2]
+
+TASK [blockinfile] *************************************************************
+changed: [worker2]
+
+TASK [file] ********************************************************************
+changed: [worker2] => (item=/etc/systemd/system/docker.service.d)
+
+TASK [service] *****************************************************************
+changed: [worker2]
+
+PLAY [master] ******************************************************************
+skipping: no hosts matched
+
+PLAY [worker1 worker2] *********************************************************
+
+TASK [shell] *******************************************************************
+changed: [worker2]
+
+TASK [shell] *******************************************************************
+changed: [worker2]
+
+TASK [replace] *****************************************************************
+changed: [worker2]
+
+TASK [service] *****************************************************************
+changed: [worker2]
+
+PLAY RECAP *********************************************************************
+worker2                    : ok=9    changed=9    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+Playbook run took 0 days, 0 hours, 5 minutes, 8 seconds
